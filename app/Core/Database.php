@@ -81,5 +81,12 @@ class Database
                 $ins->execute(['name' => $name]);
             }
         }
+
+        // Seed default admin user if none exists
+        $adminExists = $pdo->query("SELECT 1 FROM users WHERE role = 'admin' LIMIT 1")->fetchColumn();
+        if (!$adminExists) {
+            $pdo->prepare("INSERT INTO users (email, password, name, role) VALUES ('admin@admin.com', :pwd, 'Administrator', 'admin')")
+                ->execute(['pwd' => password_hash('admin', PASSWORD_DEFAULT)]);
+        }
     }
 }
