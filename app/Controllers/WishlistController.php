@@ -45,6 +45,7 @@ class WishlistController
         if ($pid) {
             $wid = $this->userWishlistId($uid);
             Wishlist::addProduct($wid, $pid);
+            \App\Services\GamificationService::awardPoints($uid, 5, 'wishlist_add');
         }
         header('Location: /wishlist');
     }

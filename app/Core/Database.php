@@ -70,6 +70,21 @@ class Database
                 FOREIGN KEY(wishlist_id) REFERENCES wishlists(id) ON DELETE CASCADE,
                 FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE
             );",
+            'add_points_to_users' => "ALTER TABLE users ADD COLUMN points INTEGER DEFAULT 0;",
+            'create_badges' => "CREATE TABLE IF NOT EXISTS badges (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                threshold INTEGER NOT NULL
+            );",
+            'create_user_badges' => "CREATE TABLE IF NOT EXISTS user_badges (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                badge_id INTEGER NOT NULL,
+                awarded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY(badge_id) REFERENCES badges(id) ON DELETE CASCADE
+            );",
+            'add_seller_id_to_products' => "ALTER TABLE products ADD COLUMN seller_id INTEGER;",
         ];
 
         foreach ($migrations as $name => $sql) {
@@ -87,6 +102,15 @@ class Database
         if (!$adminExists) {
             $pdo->prepare("INSERT INTO users (email, password, name, role) VALUES ('admin@admin.com', :pwd, 'Administrator', 'admin')")
                 ->execute(['pwd' => password_hash('admin', PASSWORD_DEFAULT)]);
+        }
+
+        // Seed default badges if table is empty
+        $badgeCount = $pdo->query('SELECT COUNT(*) FROM badges')->fetchColumn();
+        if ($badgeCount == 0) {
+            $pdo->exec("INSERT INTO badges (name, threshold) VALUES
+                ('Bronze', 100),
+                ('Silver', 500),
+                ('Gold', 1000)");
         }
     }
 }

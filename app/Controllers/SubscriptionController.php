@@ -50,6 +50,7 @@ class SubscriptionController
                     ->execute(['uid' => $uid]);
             }
         }
+        \App\Services\GamificationService::awardPoints($uid, 50, 'subscription');
         View::make('subscription/success');
     }
 

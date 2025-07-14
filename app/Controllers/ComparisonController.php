@@ -16,6 +16,7 @@ class ComparisonController
             if (!in_array($id, $_SESSION[self::SESSION_KEY])) {
                 $_SESSION[self::SESSION_KEY][] = $id;
             }
+            \App\Services\GamificationService::awardPoints($_SESSION['user']['id'] ?? 0, 2, 'compare_add');
         }
         header('Location: /compare');
     }

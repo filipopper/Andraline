@@ -17,6 +17,7 @@ $router->get('/', [\App\Controllers\HomeController::class, 'index']);
 $router->get('/login', [\App\Controllers\AuthController::class, 'showLogin']);
 $router->post('/login', [\App\Controllers\AuthController::class, 'login']);
 $router->get('/logout', [\App\Controllers\AuthController::class, 'logout']);
+$router->get('/product', [\App\Controllers\HomeController::class, 'product']);
 
 // Admin routes
 $router->get('/admin', [\App\Controllers\AdminController::class, 'dashboard'])->middleware('auth');
@@ -48,5 +49,12 @@ $router->get('/compare/remove', [\App\Controllers\ComparisonController::class, '
 $router->get('/wishlist', [\App\Controllers\WishlistController::class, 'my'])->middleware('auth');
 $router->get('/wishlist/add', [\App\Controllers\WishlistController::class, 'add'])->middleware('auth');
 $router->get('/wishlist/view', [\App\Controllers\WishlistController::class, 'view']);
+
+// Seller routes
+$router->get('/seller', [\App\Controllers\SellerController::class, 'dashboard']);
+$router->get('/seller/products', [\App\Controllers\SellerController::class, 'products']);
+
+// SEO sitemap
+$router->get('/sitemap.xml', [\App\Controllers\SitemapController::class, 'index']);
 
 $router->dispatch();
