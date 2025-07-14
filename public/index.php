@@ -18,6 +18,19 @@ $router->get('/login', [\App\Controllers\AuthController::class, 'showLogin']);
 $router->post('/login', [\App\Controllers\AuthController::class, 'login']);
 $router->get('/logout', [\App\Controllers\AuthController::class, 'logout']);
 $router->get('/product', [\App\Controllers\HomeController::class, 'product']);
+$router->get('/register', [\App\Controllers\AuthController::class, 'showRegister']);
+$router->post('/register', [\App\Controllers\AuthController::class, 'register']);
+
+// Cart routes
+$router->get('/cart', [\App\Controllers\CartController::class, 'index']);
+$router->get('/cart/add', [\App\Controllers\CartController::class, 'add']);
+$router->post('/cart/update', [\App\Controllers\CartController::class, 'update']);
+$router->get('/cart/remove', [\App\Controllers\CartController::class, 'remove']);
+$router->get('/cart/checkout', [\App\Controllers\CartController::class, 'checkout']);
+
+// Order routes
+$router->get('/order', [\App\Controllers\OrderController::class, 'show'])->middleware('auth');
+$router->get('/orders', [\App\Controllers\OrderController::class, 'history'])->middleware('auth');
 
 // Admin routes
 $router->get('/admin', [\App\Controllers\AdminController::class, 'dashboard'])->middleware('auth');
@@ -33,6 +46,11 @@ $router->get('/admin/users', [\App\Controllers\Admin\UserController::class, 'ind
 $router->get('/admin/users/create', [\App\Controllers\Admin\UserController::class, 'create'])->middleware('auth');
 $router->post('/admin/users/store', [\App\Controllers\Admin\UserController::class, 'store'])->middleware('auth');
 $router->get('/admin/users/delete', [\App\Controllers\Admin\UserController::class, 'delete'])->middleware('auth');
+
+// Admin order routes
+$router->get('/admin/orders', [\App\Controllers\Admin\OrderController::class, 'index'])->middleware('auth');
+$router->get('/admin/orders/show', [\App\Controllers\Admin\OrderController::class, 'show'])->middleware('auth');
+$router->post('/admin/orders/update', [\App\Controllers\Admin\OrderController::class, 'updateStatus'])->middleware('auth');
 
 // Subscription routes
 $router->get('/subscription', [\App\Controllers\SubscriptionController::class, 'plans'])->middleware('auth');
