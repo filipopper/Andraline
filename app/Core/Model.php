@@ -8,7 +8,7 @@ abstract class Model
     protected static string $table;
     protected static string $primaryKey = 'id';
 
-    protected static function db(): PDO
+    public static function db(): PDO
     {
         return Database::pdo();
     }
