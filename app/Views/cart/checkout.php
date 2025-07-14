@@ -4,12 +4,23 @@
     <label class="block mb-1">Shipping Address</label>
     <textarea class="border rounded w-full p-2" name="address" rows="3" required></textarea>
   </div>
+  <?php if($coupon): ?>
+    <p class="text-green-700">Coupon <strong><?= htmlspecialchars($coupon->code) ?></strong> applied (−$<?= number_format($discount,2) ?>)</p>
+  <?php else: ?>
+    <div>
+      <label class="block mb-1">Coupon Code</label>
+      <input class="border rounded p-2 w-1/2" type="text" name="coupon">
+      <button class="ml-2 bg-blue-600 text-white px-2 py-1 rounded" name="apply_coupon" value="1">Apply</button>
+    </div>
+  <?php endif; ?>
   <h3 class="text-xl font-semibold">Order Summary</h3>
   <ul class="space-y-1">
     <?php foreach ($items as $item): ?>
       <li><?= htmlspecialchars($item['name']) ?> × <?= $item['qty'] ?> – $<?= number_format($item['total'],2) ?></li>
     <?php endforeach; ?>
   </ul>
-  <p class="font-bold">Total: $<?= number_format($total,2) ?></p>
+  <p class="font-bold">Discount: $<?= number_format($discount,2) ?></p>
+  <?php if($shipping): ?><p class="font-bold">Shipping: $<?= number_format($shipping,2) ?></p><?php endif; ?>
+  <p class="font-bold text-lg">Grand Total: $<?= number_format($grandTotal,2) ?></p>
   <button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Place Order</button>
 </form>

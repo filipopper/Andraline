@@ -20,8 +20,9 @@ class HomeController
             echo 'Product not found';
             return;
         }
+        $variants = \App\Models\ProductVariant::variantsForProduct($id);
         $metaTitle = $product->name . ' - MiniCommerce';
         $metaDescription = substr($product->description, 0, 150);
-        \App\Core\View::make('product', compact('product', 'metaTitle', 'metaDescription'));
+        \App\Core\View::make('product', compact('product','variants', 'metaTitle', 'metaDescription'));
     }
 }

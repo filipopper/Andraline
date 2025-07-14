@@ -31,6 +31,7 @@ $router->get('/cart/checkout', [\App\Controllers\CartController::class, 'checkou
 // Order routes
 $router->get('/order', [\App\Controllers\OrderController::class, 'show'])->middleware('auth');
 $router->get('/orders', [\App\Controllers\OrderController::class, 'history'])->middleware('auth');
+$router->get('/order/invoice', [\App\Controllers\OrderController::class, 'invoice'])->middleware('auth');
 
 // Admin routes
 $router->get('/admin', [\App\Controllers\AdminController::class, 'dashboard'])->middleware('auth');

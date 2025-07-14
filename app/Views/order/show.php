@@ -1,6 +1,7 @@
 <h2 class="text-2xl font-semibold mb-6">Order #<?= $order->id ?></h2>
 <p>Status: <span class="font-semibold"><?= htmlspecialchars($order->status) ?></span></p>
 <p>Total: $<?= number_format($order->total,2) ?></p>
+<p class="mt-4"><a class="text-blue-600 hover:underline" href="/order/invoice?order_id=<?= $order->id ?>">Download Invoice (PDF)</a></p>
 <h3 class="text-xl font-semibold mt-4 mb-2">Items</h3>
 <table class="min-w-full border divide-y divide-gray-200">
   <thead class="bg-gray-50">

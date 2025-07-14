@@ -105,6 +105,24 @@ class Database
                 FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE,
                 FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE
             );",
+            'create_product_variants' => "CREATE TABLE IF NOT EXISTS product_variants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                price REAL NOT NULL,
+                stock INTEGER DEFAULT 0,
+                FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE
+            );",
+            'create_coupons' => "CREATE TABLE IF NOT EXISTS coupons (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                code TEXT NOT NULL UNIQUE,
+                discount REAL NOT NULL,
+                type TEXT NOT NULL DEFAULT 'fixed', /* fixed|percent */
+                expires_at DATETIME,
+                max_uses INTEGER,
+                uses INTEGER DEFAULT 0
+            );",
+            'add_coupon_to_orders' => "ALTER TABLE orders ADD COLUMN coupon_code TEXT;",
         ];
 
         foreach ($migrations as $name => $sql) {

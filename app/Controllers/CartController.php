@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Services\CartService;
 use App\Models\Order;
+use App\Services\InvoiceService;
 
 class CartController
 {
@@ -18,8 +19,9 @@ class CartController
     {
         $id  = (int) ($_GET['id'] ?? 0);
         $qty = (int) ($_GET['qty'] ?? 1);
+        $variant = isset($_GET['variant']) ? (int)$_GET['variant'] : null;
         if ($id) {
-            CartService::add($id, $qty);
+            CartService::add($id, $qty, $variant);
         }
         header('Location: /cart');
     }
@@ -49,12 +51,28 @@ class CartController
         $items = CartService::detailedItems();
         $total = CartService::total();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['apply_coupon'])) {
+                $code = trim($_POST['coupon'] ?? '');
+                $applied = \App\Services\CartService::applyCoupon($code);
+                header('Location: /cart/checkout');
+                exit;
+            }
             $address = $_POST['address'] ?? '';
-            $orderId = Order::createOrder($uid, $total, $address, $items);
+            $discount = CartService::discount();
+            $shipping = CartService::shipping($address);
+            $grandTotal = CartService::grandTotal($address);
+            $orderId = Order::createOrder($uid, $grandTotal, $address, $items);
+            // store coupon usage
+            if ($coupon = CartService::coupon()) { \App\Models\Coupon::incrementUse($coupon->id); Order::update($orderId, ['coupon_code'=>$coupon->code]); }
             CartService::clear();
+            \App\Services\InvoiceService::generate($orderId);
             header('Location: /order?order_id=' . $orderId);
             exit;
         }
-        View::make('cart/checkout', compact('items', 'total'));
+        $coupon = CartService::coupon();
+        $discount = CartService::discount();
+        $shipping = 0; // shipping to be calculated after address
+        $grandTotal = CartService::subtotal() - $discount;
+        View::make('cart/checkout', compact('items', 'total', 'coupon', 'discount', 'shipping', 'grandTotal'));
     }
 }
